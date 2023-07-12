@@ -2,15 +2,15 @@ from django.db import models
 
 
 class Bonds(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, null=False)
     #yield_date = models.DateField()
-    isin = models.CharField(max_length=30, unique=True, null=True)
-    price = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-    duration = models.SmallIntegerField(null=True)
-    effective_yield = models.DecimalField(max_digits=4, decimal_places=2, null=True)
-    g_spread = models.DecimalField(max_digits=4, decimal_places=2, null=True)
-    z_spread = models.DecimalField(max_digits=4, decimal_places=2, null=True)
-    volume = models.IntegerField(null=True, blank=True)
+    isin = models.CharField(max_length=30, unique=True, null=False)
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+    duration = models.SmallIntegerField()
+    effective_yield = models.DecimalField(max_digits=4, decimal_places=2)
+    g_spread = models.DecimalField(max_digits=5, decimal_places=2)
+    z_spread = models.DecimalField(max_digits=5, decimal_places=2)
+    volume = models.IntegerField()
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     bonds_rating = models.ForeignKey('BondsRating', on_delete=models.PROTECT, null=True, blank=True)
