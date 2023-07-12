@@ -2,16 +2,18 @@ from django.db import models
 
 
 class Bonds(models.Model):
-    name = models.CharField(max_length=20)
-    yield_date = models.DateField()
-    isin = models.CharField(max_length=15)
-    price = models.DecimalField(max_digits=4, decimal_places=2)
-    duration = models.SmallIntegerField()
-    effective_yield = models.DecimalField(max_digits=4, decimal_places=2)
-    g_spread = models.DecimalField(max_digits=4, decimal_places=2)
-    z_spread = models.DecimalField(max_digits=4, decimal_places=2)
-    volume = models.IntegerField()
-    bonds_rating = models.ForeignKey('BondsRating', on_delete=models.PROTECT)
+    name = models.CharField(max_length=30)
+    #yield_date = models.DateField()
+    isin = models.CharField(max_length=30, unique=True, null=True)
+    price = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    duration = models.SmallIntegerField(null=True)
+    effective_yield = models.DecimalField(max_digits=4, decimal_places=2, null=True)
+    g_spread = models.DecimalField(max_digits=4, decimal_places=2, null=True)
+    z_spread = models.DecimalField(max_digits=4, decimal_places=2, null=True)
+    volume = models.IntegerField(null=True, blank=True)
+    time_create = models.DateTimeField(auto_now_add=True)
+    time_update = models.DateTimeField(auto_now=True)
+    bonds_rating = models.ForeignKey('BondsRating', on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -21,7 +23,7 @@ class Bonds(models.Model):
 
 
 class BondsRating(models.Model):
-    rating = models.CharField(max_length=4)
+    rating = models.CharField(max_length=4, unique=True)
 
     def __str__(self):
         return self.rating
