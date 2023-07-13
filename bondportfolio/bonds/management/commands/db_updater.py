@@ -36,17 +36,17 @@ class Command(BaseCommand):
             else:
                 continue
 
-            if bond[9][1] and bond[9][1] / 100 < 20:
+            if bond[9][1] and (20 > bond[9][1] / 100 > -20):
                 g_spread = round(bond[9][1] / 100, 2)
             else:
                 continue
 
-            if bond[8][1] and bond[8][1] / 100 < 20:
+            if bond[8][1] and (20 > bond[8][1] / 100 > -20):
                 z_spread = round(bond[8][1] / 100, 2)
             else:
                 continue
 
-            if bond[2][1] and bond[7][1]:
+            if bond[2][1] and bond[7][1] and bond[3][1]:
                 pass
             else:
                 continue
@@ -62,7 +62,8 @@ class Command(BaseCommand):
                 duration=bond[7][1],
                 effective_yield=effective_yield,
                 g_spread=g_spread,
-                z_spread=z_spread
+                z_spread=z_spread,
+                yield_date=bond[3][1]
             )
 
         print("filling in isin and name")
@@ -88,23 +89,22 @@ class Command(BaseCommand):
         objs = Bonds.objects.all()
 
         for item in objs:
-            if item.g_spread:  # checking if g_spread exists because otherwise we don't need to waste
-                isin = item.isin  # resources on volume
-                response = requests.get(
-                    'https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/TQCB/securities/'
-                    f'{isin}.json?iss.meta=off&from={date_14_days_ago}')  # have to check by ISIN since there is
-                history = response.json()['history']  # pagination, prolly need to figure out other
-                # way to do this
-                history_data = []
-                for data in history['data']:
-                    if data[14]:
-                        history_data.append(data[14])
-                    else:
-                        continue
-                if history_data:
-                    avg_volume = int((sum(history_data) / len(history_data)) * 1000)
-                    print(f'writing volume for {isin}')
-                    item.volume = avg_volume
-                    item.save()
+            isin = item.isin  # resources on volume
+            response = requests.get(
+                'https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/TQCB/securities/'
+                f'{isin}.json?iss.meta=off&from={date_14_days_ago}')  # have to check by ISIN since there is
+            history = response.json()['history']  # pagination, prolly need to figure out other
+            # way to do this
+            history_data = []
+            for data in history['data']:
+                if data[14]:
+                    history_data.append(data[14])
+                else:
+                    continue
+            if history_data:
+                avg_volume = int((sum(history_data) / len(history_data)) * 1000)
+                print(f'writing volume for {isin}')
+                item.volume = avg_volume
+                item.save()
 
         print('done')
