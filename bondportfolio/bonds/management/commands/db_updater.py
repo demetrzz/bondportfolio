@@ -28,7 +28,7 @@ class Command(BaseCommand):
 
         for bond in securities_data:
             print(f'bond outside is {bond[3][1]}')
-            if bond[3][1]:
+            if bond[3][1] and bond[0][1].startswith('RU'):
                 print(f'bond is {bond[3][1]}')
                 Bonds.objects.update_or_create(
                     name=bond[2][1],
@@ -94,36 +94,29 @@ class Command(BaseCommand):
         print('starting volume')
         date_14_days_ago = datetime.date.today() - datetime.timedelta(days=14)
 
-        # response = requests.get('https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/TQCB/securities/'
-        #                         f'RU000A105ZX2.json?iss.meta=off&from={date_14_days_ago}')
-        #
-        # history = response.json()['history']
-        #
-        # history_data = []
-        # for data in history['data']:
-        #     history_data.append(data[14])
-        # avg_volume = int((sum(history_data) / len(history_data)) * 1000)
+
 
         objs = Bonds.objects.all()
 
         for item in objs:
-            isin = item.isin
-            response = requests.get(
-                'https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/TQCB/securities/'
-                f'{isin}.json?iss.meta=off&from={date_14_days_ago}')
-            history = response.json()['history']
+            if item.g_spread:
+                isin = item.isin
+                response = requests.get(
+                    'https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/TQCB/securities/'
+                    f'{isin}.json?iss.meta=off&from={date_14_days_ago}')
+                history = response.json()['history']
 
-            history_data = []
-            for data in history['data']:
-                print(data[14])
-                if data[14]:
-                    history_data.append(data[14])
-                else:
-                    continue
-            if history_data:
-                avg_volume = int((sum(history_data) / len(history_data)) * 1000)
-                print(f'writing volume for {isin}')
-                item.volume = avg_volume
-                item.save()
+                history_data = []
+                for data in history['data']:
+                    print(data[14])
+                    if data[14]:
+                        history_data.append(data[14])
+                    else:
+                        continue
+                if history_data:
+                    avg_volume = int((sum(history_data) / len(history_data)) * 1000)
+                    print(f'writing volume for {isin}')
+                    item.volume = avg_volume
+                    item.save()
 
 
