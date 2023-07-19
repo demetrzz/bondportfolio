@@ -22,8 +22,6 @@ class Command(BaseCommand):
         #                     B+	15.5%
         #                     B	    16%
         #                     B-	16.5%
-        qs = Bonds.objects.filter(g_spread__range=(0.1, 1.4))
-        qs.update(bonds_rating_id=1)
 
         start_range = 8.75
         finish_range = 9.25
