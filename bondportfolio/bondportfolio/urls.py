@@ -15,12 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, include
 from bonds.views import*
 
 urlpatterns = [
+    path('api/v1/drf-auth/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
-    path("api/v1/bonds/", BondsByParameters.as_view()),
+    path("api/v1/bonds/instrument/", BondsByParameters.as_view()),
     path('api/v1/bonds/<int:bonds_rating_id>/', BondsAPIListByRating.as_view()),
     path('api/v1/bonds/<int:start>/<int:end>', BondsAPIListByRating.as_view()),
     path('api/v1/bonds/', BondsAPIList.as_view()),

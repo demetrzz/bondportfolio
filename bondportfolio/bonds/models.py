@@ -1,4 +1,5 @@
 from django.db import models
+from rest_framework.authtoken.admin import User
 
 
 class Bonds(models.Model):
@@ -13,7 +14,7 @@ class Bonds(models.Model):
     volume = models.IntegerField(null=True)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
-    bonds_rating = models.ForeignKey('BondsRating', on_delete=models.PROTECT, null=True, blank=True)
+    rating = models.ForeignKey('Rating', on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -22,8 +23,16 @@ class Bonds(models.Model):
         verbose_name_plural = "Bonds"
 
 
-class BondsRating(models.Model):
+class Rating(models.Model):
     rating = models.CharField(max_length=4, unique=True)
 
     def __str__(self):
         return self.rating
+
+
+class Deals(models.Model):
+    buy = models.BooleanField(null=False)
+    quantity = models.IntegerField(null=False)
+    time_create = models.DateTimeField(auto_now_add=True)
+    bonds = models.ForeignKey('Bonds', on_delete=models.PROTECT, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

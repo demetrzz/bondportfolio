@@ -27,6 +27,6 @@ class Command(BaseCommand):
         finish_range = 9.25
         for rating in range(1, 17):
             qs = Bonds.objects.filter(effective_yield__range=(start_range, finish_range))
-            qs.update(bonds_rating_id=rating)
+            qs.update(rating_id=rating)
             start_range = finish_range + 0.01
             finish_range = finish_range + 0.5

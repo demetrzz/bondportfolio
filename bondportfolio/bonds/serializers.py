@@ -10,7 +10,7 @@ class BondsSerializer(serializers.ModelSerializer):
 
 class BondsRatingSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BondsRating
+        model = Rating
         fields = "__all__"
 
 

@@ -55,6 +55,8 @@ class BondsByParameters(generics.ListCreateAPIView):
     permission_classes = (IsAdminOrReadOnly,)
 
     def get_queryset(self):
-        longitude = self.request.query_params.get('longitude')
-        latitude = self.request.query_params.get('latitude')
-        radius = self.request.query_params.get('radius')
+        #self.request.GET.items()
+        startdur = self.request.GET.get('startdur')
+        enddur = self.request.GET.get('enddur')
+        qs = Bonds.objects.filter(duration__range=(startdur, enddur))
+        return qs
