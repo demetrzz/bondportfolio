@@ -20,7 +20,7 @@ from bonds.views import*
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("api/v1/bonds/rating/", BondsTestParameters.as_view()),
+    path("api/v1/bonds/", BondsByParameters.as_view()),
     path('api/v1/bonds/<int:bonds_rating_id>/', BondsAPIListByRating.as_view()),
     path('api/v1/bonds/<int:start>/<int:end>', BondsAPIListByRating.as_view()),
     path('api/v1/bonds/', BondsAPIList.as_view()),

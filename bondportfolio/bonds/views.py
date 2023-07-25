@@ -18,8 +18,6 @@ class BondsAPIListByRating(generics.ListCreateAPIView):
     permission_classes = (IsAdminOrReadOnly, )
 
     def get_queryset(self):
-        rating = self.kwargs.get('rating', None)
-        print(rating)
         bonds_rating_id = self.kwargs.get('bonds_rating_id', None)
         start = self.kwargs.get('start', None)
         end = self.kwargs.get('end', None)
@@ -38,13 +36,6 @@ class BondsAPIListByRating(generics.ListCreateAPIView):
             else:
                 raise NotFound()
 
-        # bonds_rating_id = self.kwargs.get(self.lookup_url_kwarg)
-        # bonds_by_rating = Bonds.objects.filter(bonds_rating_id=bonds_rating_id)
-        # if bonds_by_rating:
-        #     return bonds_by_rating
-        # else:
-        #     raise NotFound()
-
 
 class BondsAPIUpdate(generics.RetrieveUpdateAPIView):
     queryset = Bonds.objects.all()
@@ -59,7 +50,7 @@ class BondsAPIDestroy(generics.RetrieveDestroyAPIView):
     permission_classes = (IsAdminOrReadOnly, )
 
 
-class BondsTestParameters(generics.ListCreateAPIView):
+class BondsByParameters(generics.ListCreateAPIView):
     serializer_class = BondsSerializer
     permission_classes = (IsAdminOrReadOnly,)
 
@@ -67,4 +58,3 @@ class BondsTestParameters(generics.ListCreateAPIView):
         longitude = self.request.query_params.get('longitude')
         latitude = self.request.query_params.get('latitude')
         radius = self.request.query_params.get('radius')
-        print(longitude, latitude, radius)
