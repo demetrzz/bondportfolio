@@ -1,5 +1,7 @@
 from django.http import request
 from rest_framework.exceptions import NotFound
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from .serializers import *
 from .permissions import *
@@ -37,19 +39,6 @@ class BondsAPIListByRating(generics.ListCreateAPIView):
                 raise NotFound()
 
 
-class BondsAPIUpdate(generics.RetrieveUpdateAPIView):
-    queryset = Bonds.objects.all()
-    serializer_class = BondsSerializer
-    # authentication_classes = (TokenAuthentication, )
-    permission_classes = (IsAdminOrReadOnly, )
-
-
-class BondsAPIDestroy(generics.RetrieveDestroyAPIView):
-    queryset = Bonds.objects.all()
-    serializer_class = BondsSerializer
-    permission_classes = (IsAdminOrReadOnly, )
-
-
 class BondsByParameters(generics.ListCreateAPIView):
     serializer_class = BondsSerializer
     permission_classes = (IsAdminOrReadOnly,)
@@ -60,3 +49,9 @@ class BondsByParameters(generics.ListCreateAPIView):
         enddur = self.request.GET.get('enddur')
         qs = Bonds.objects.filter(duration__range=(startdur, enddur))
         return qs
+
+
+class BondsDeals(generics.CreateAPIView):
+    queryset = Deals.objects.all()
+    serializer_class = DealsSerializer
+    permission_classes = (IsAuthenticated, )
