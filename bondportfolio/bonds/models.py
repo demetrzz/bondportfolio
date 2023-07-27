@@ -36,3 +36,14 @@ class Deals(models.Model):
     time_create = models.DateTimeField(auto_now_add=True)
     bonds = models.ForeignKey('Bonds', on_delete=models.PROTECT, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Deals"
+
+
+class Images(models.Model):
+    image_base64 = models.BinaryField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
+
+    class Meta:
+        verbose_name_plural = "Images"

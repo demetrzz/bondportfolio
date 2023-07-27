@@ -3,4 +3,4 @@ from .models import *
 
 admin.site.register(Bonds)
 admin.site.register(Rating)
-
+admin.site.register(Deals)

@@ -23,6 +23,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/v1/deals/", BondsDeals.as_view()),
+    path("api/v1/image/", BondsImage.as_view()),
     path("api/v1/instrument/", BondsByParameters.as_view()),
     path('api/v1/bonds/<int:bonds_rating_id>/', BondsAPIListByRating.as_view()),
     path('api/v1/bonds/<int:start>/<int:end>', BondsAPIListByRating.as_view()),

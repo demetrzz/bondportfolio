@@ -26,3 +26,20 @@ class DealsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Deals
         fields = "__all__"
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    image_base64 = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Images
+        fields = "__all__"
+
+    def get_image_base64(self, obj):
+        print('kek2')
+        print(type(bytes(obj.image_base64).decode()))
+        return bytes(obj.image_base64).decode()
+
+    class Meta:
+        model = Images
+        fields = "__all__"
