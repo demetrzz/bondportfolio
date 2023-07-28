@@ -43,7 +43,7 @@ class Deals(models.Model):
 
 class Images(models.Model):
     image_base64 = models.BinaryField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "Images"

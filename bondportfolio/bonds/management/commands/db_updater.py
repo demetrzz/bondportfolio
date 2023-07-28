@@ -119,10 +119,10 @@ class Command(BaseCommand):
         for item in objs:
             isin = item.isin
             url_list.append('https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/TQCB/securities/'
-                            f'{isin}.json?iss.meta=off&from={date_14_days_ago}')
+                            f'{isin}.json')
 
         def getdata(url):
-            res = requests.get(url)
+            res = requests.get(url, params={'iss.meta': 'off','from': date_14_days_ago})
             return res.json()['history']
 
         with futures.ThreadPoolExecutor() as executor:  # concurrent requests

@@ -1,6 +1,7 @@
 import base64
 import io
 
+import requests
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 import numpy as np
@@ -66,32 +67,28 @@ class BondsImage(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
-        data_0 = [[0.25, 7.3482],
-                  [0.50, 7.5542],
-                  [0.75, 7.7532],
-                  [1.00, 7.9418],
-                  [2.00, 8.5998],
-                  [3.00, 9.1398],
-                  [5.00, 10.0335],
-                  [7.00, 10.6535],
-                  [10.00, 11.1882],
-                  [15.00, 11.6357],
-                  [20.00, 11.8698],
-                  [30.00, 12.1197]]
-
-        (x, y) = zip(*data_0)
-        x_list = list(x)
-        y_list = list(y)
+        response = requests.get(
+            'https://iss.moex.com/iss/engines/stock/zcyc.json?iss.only=yearyields&iss.meta=off&date=today')
+        data = response.json()['yearyields']['data']
+        
+        x_list = [item[2] for item in data]
+        y_list = [item[3] for item in data]
+        x_list2 = [item[2] for item in data]
+        y_list2 = [item[3] + 1 for item in data]
         poly = np.polyfit(x_list, y_list, 5)
         poly_y = np.poly1d(poly)(x_list)
         np.interp(0.6, x_list, poly_y)
-        plt.plot(x_list, y_list)
+        plt.plot(x_list, y_list, label='g-curve')
+        plt.plot(x_list2, y_list2, label='g-curve + 1%')
+        plt.xlabel("duration")
+        plt.ylabel("yield")
+        plt.legend()
+        
         string_bytes = io.BytesIO()
         plt.savefig(string_bytes, format='jpg')
         string_bytes.seek(0)
         base64_jpg_data = base64.b64encode(string_bytes.read())
-        user_id = self.request.user.id
-        print(base64_jpg_data)
+        user_id = self.request.user.id                                                                                                  
 
         Images.objects.update_or_create(
             user_id=user_id,
