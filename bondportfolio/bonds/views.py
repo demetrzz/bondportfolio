@@ -67,34 +67,6 @@ class BondsImage(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
-        response = requests.get(
-            'https://iss.moex.com/iss/engines/stock/zcyc.json?iss.only=yearyields&iss.meta=off&date=today')
-        data = response.json()['yearyields']['data']
-        
-        x_list = [item[2] for item in data]
-        y_list = [item[3] for item in data]
-        x_list2 = [item[2] for item in data]
-        y_list2 = [item[3] + 1 for item in data]
-        poly = np.polyfit(x_list, y_list, 5)
-        poly_y = np.poly1d(poly)(x_list)
-        np.interp(0.6, x_list, poly_y)
-        plt.plot(x_list, y_list, label='g-curve')
-        plt.plot(x_list2, y_list2, label='g-curve + 1%')
-        plt.xlabel("duration")
-        plt.ylabel("yield")
-        plt.legend()
-        
-        string_bytes = io.BytesIO()
-        plt.savefig(string_bytes, format='jpg')
-        string_bytes.seek(0)
-        base64_jpg_data = base64.b64encode(string_bytes.read())
         user_id = self.request.user.id                                                                                                  
-
-        Images.objects.update_or_create(
-            user_id=user_id,
-            defaults={
-                'image_base64': base64_jpg_data,
-            }
-        )
-
-        return Images.objects.filter(user=user_id)
+        image = Images.generate_and_send(user_id)
+        return image

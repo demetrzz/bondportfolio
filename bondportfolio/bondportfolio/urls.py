@@ -26,8 +26,9 @@ urlpatterns = [
     path("api/v1/image/", BondsImage.as_view()),
     path("api/v1/instrument/", BondsByParameters.as_view()),
     path('api/v1/bonds/<int:bonds_rating_id>/', BondsAPIListByRating.as_view()),
-    path('api/v1/bonds/<int:start>/<int:end>', BondsAPIListByRating.as_view()),
-    path('api/v1/bonds/', BondsAPIList.as_view()),
+    path('api/v1/bonds/<int:start>/<int:end>/', BondsAPIListByRating.as_view()),
+    path('api/v1/bonds/<str:isin>/', BondsAPIList.as_view(), name='bonds_rest_api'),  # this is for test, delete later
+    path('api/v1/bonds/', BondsAPIList.as_view(), name='all_bonds'),
     # auth urls
     # path('api/v1/drf-auth/', include('rest_framework.urls')),
     path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

@@ -1,4 +1,11 @@
+import base64
+import io
+
+import numpy as np
+import requests
 from django.db import models
+from django.urls import reverse
+from matplotlib import pyplot as plt
 from rest_framework.authtoken.admin import User
 
 
@@ -18,6 +25,9 @@ class Bonds(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('bonds_rest_api', kwargs={'isin': self.isin})
 
     class Meta:
         verbose_name_plural = "Bonds"
@@ -44,6 +54,41 @@ class Deals(models.Model):
 class Images(models.Model):
     image_base64 = models.BinaryField()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    @classmethod
+    def generate_and_send(cls, user_id):
+        response = requests.get(
+            'https://iss.moex.com/iss/engines/stock/zcyc.json?iss.only=yearyields&iss.meta=off&date=today')
+        data = response.json()['yearyields']['data']
+
+        x_list = [item[2] for item in data]
+        y_list = [item[3] for item in data]
+
+        x_list2 = [item[2] for item in data]
+        y_list2 = [item[3]+1 for item in data]
+
+        poly = np.polyfit(x_list, y_list, 5)
+        poly_y = np.poly1d(poly)(x_list)
+        np.interp(0.6, x_list, poly_y)
+        plt.plot(x_list, y_list, label='g-curve')
+        plt.plot(x_list2, y_list2, label='g-curve + 1%')
+        plt.xlabel("duration")
+        plt.ylabel("yield")
+        plt.legend()
+
+        string_bytes = io.BytesIO()
+        plt.savefig(string_bytes, format='jpg')
+        string_bytes.seek(0)
+        base64_jpg_data = base64.b64encode(string_bytes.read())
+
+        Images.objects.update_or_create(
+            user_id=user_id,
+            defaults={
+                'image_base64': base64_jpg_data,
+            }
+        )
+
+        return Images.objects.filter(user=user_id)
 
     class Meta:
         verbose_name_plural = "Images"
