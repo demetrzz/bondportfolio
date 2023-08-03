@@ -16,25 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from bonds.views import*
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("api/v1/deals/", BondsDeals.as_view()),
-    path("api/v1/image/", BondsImage.as_view()),
-    path("api/v1/instrument/", BondsByParameters.as_view()),
-    path('api/v1/bonds/<int:bonds_rating_id>/', BondsAPIListByRating.as_view()),
-    path('api/v1/bonds/<int:start>/<int:end>/', BondsAPIListByRating.as_view()),
-    path('api/v1/bonds/<str:isin>/', BondsAPIList.as_view(), name='bonds_rest_api'),  # this is for test, delete later
-    path('api/v1/bonds/', BondsAPIList.as_view(), name='all_bonds'),
+    path('api/v1/', include('bonds.urls')),  # Bonds API
     # auth urls
     # path('api/v1/drf-auth/', include('rest_framework.urls')),
-    path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/v1/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-    path('api/v1/auth/', include('djoser.urls')),
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
 ]
 

@@ -1,5 +1,6 @@
 import base64
 import io
+# import uuid as uuid_lib
 
 import numpy as np
 import requests
@@ -7,6 +8,8 @@ from django.db import models
 from django.urls import reverse
 from matplotlib import pyplot as plt
 from rest_framework.authtoken.admin import User
+
+plt.switch_backend('agg')
 
 
 class Bonds(models.Model):
@@ -56,22 +59,29 @@ class Images(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     @classmethod
-    def generate_and_send(cls, user_id):
+    def generate_and_send(cls, user_id, percents=()):
         response = requests.get(
             'https://iss.moex.com/iss/engines/stock/zcyc.json?iss.only=yearyields&iss.meta=off&date=today')
         data = response.json()['yearyields']['data']
+        for i in range(len(percents)):
+            x_list = [item[2] for item in data]
+            y_list = [item[3]+i for item in data]
+            poly = np.polyfit(x_list, y_list, 5)
+            poly_y = np.poly1d(poly)(x_list)
+            np.interp(0.6, x_list, poly_y)
+            plt.plot(x_list, y_list, label=f'g-curve + {1}%')
 
-        x_list = [item[2] for item in data]
-        y_list = [item[3] for item in data]
-
-        x_list2 = [item[2] for item in data]
-        y_list2 = [item[3]+1 for item in data]
-
-        poly = np.polyfit(x_list, y_list, 5)
-        poly_y = np.poly1d(poly)(x_list)
-        np.interp(0.6, x_list, poly_y)
-        plt.plot(x_list, y_list, label='g-curve')
-        plt.plot(x_list2, y_list2, label='g-curve + 1%')
+        # x_list = [item[2] for item in data]
+        # y_list = [item[3] for item in data]
+        #
+        # x_list2 = [item[2] for item in data]
+        # y_list2 = [item[3]+1 for item in data]
+        #
+        # poly = np.polyfit(x_list, y_list, 5)
+        # poly_y = np.poly1d(poly)(x_list)
+        # np.interp(0.6, x_list, poly_y)
+        # plt.plot(x_list, y_list, label='g-curve')
+        # plt.plot(x_list2, y_list2, label='g-curve + 1%')
         plt.xlabel("duration")
         plt.ylabel("yield")
         plt.legend()

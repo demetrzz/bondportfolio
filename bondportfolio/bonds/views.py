@@ -1,18 +1,12 @@
-import base64
-import io
-
-import requests
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
-import numpy as np
-import matplotlib.pyplot as plt
+
 
 from .serializers import *
 from .permissions import *
 from .models import *
 from rest_framework import generics
 
-plt.switch_backend('agg')
 
 class BondsAPIList(generics.ListCreateAPIView):
     queryset = Bonds.objects.all()
@@ -25,23 +19,12 @@ class BondsAPIListByRating(generics.ListCreateAPIView):
     permission_classes = (IsAdminOrReadOnly, )
 
     def get_queryset(self):
-        bonds_rating_id = self.kwargs.get('bonds_rating_id', None)
-        start = self.kwargs.get('start', None)
-        end = self.kwargs.get('end', None)
-        print('kek')
-
-        if bonds_rating_id:
-            bonds_by_id = Bonds.objects.filter(bonds_rating_id=bonds_rating_id)
-            if bonds_by_id:
-                return bonds_by_id
-            else:
-                raise NotFound()
-        elif start and end:
-            bonds_range = Bonds.objects.filter(bonds_rating_id__gte=start, bonds_rating_id__lte=end)
-            if bonds_range:
-                return bonds_range
-            else:
-                raise NotFound()
+        rating_id = self.kwargs.get('rating_id', None)
+        bonds_by_id = Bonds.objects.filter(rating_id=rating_id)
+        if bonds_by_id:
+            return bonds_by_id
+        else:
+            raise NotFound()
 
 
 class BondsByParameters(generics.ListCreateAPIView):
@@ -56,9 +39,15 @@ class BondsByParameters(generics.ListCreateAPIView):
         return qs
 
 
-class BondsDeals(generics.CreateAPIView):
+class BondsDeals(generics.ListCreateAPIView):
     queryset = Deals.objects.all()
     serializer_class = DealsSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class DealsByUser(generics.ListCreateAPIView):
+    queryset = Deals.objects.all()
+    serializer_class = DealsSerializerByUser
     permission_classes = (IsAuthenticated, )
 
 
@@ -68,5 +57,5 @@ class BondsImage(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user_id = self.request.user.id                                                                                                  
-        image = Images.generate_and_send(user_id)
+        image = Images.generate_and_send(user_id, (1, 2))
         return image

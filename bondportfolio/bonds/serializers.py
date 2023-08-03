@@ -14,32 +14,36 @@ class RatingSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class BondsSerializerByRating(serializers.ModelSerializer):
-    bonds_rating = RatingSerializer(read_only=True)
-
-    class Meta:
-        model = Bonds
-        fields = ['name', 'yield_date', 'price', 'duration', 'effective_yield', 'g_spread', 'volume', 'bonds_rating']
-
-
 class DealsSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Deals
-        fields = "__all__"
+        fields = '__all__'
+
+
+class DealsSerializerByUser(serializers.ModelSerializer):
+    bonds = BondsSerializer(read_only=True)
+
+    class Meta:
+        model = Deals
+        fields = ['user_id', 'id', 'bonds']
 
 
 class ImageSerializer(serializers.ModelSerializer):
     image_base64 = serializers.SerializerMethodField()
 
-    class Meta:
-        model = Images
-        fields = "__all__"
-
     def get_image_base64(self, obj):
-        print('kek2')
-        print(type(bytes(obj.image_base64).decode()))
         return bytes(obj.image_base64).decode()
 
     class Meta:
         model = Images
         fields = "__all__"
+
+
+class BondsSerializerByRating(serializers.ModelSerializer):
+    rating = RatingSerializer(read_only=True)
+
+    class Meta:
+        model = Bonds
+        fields = ['name', 'yield_date', 'price', 'duration', 'effective_yield', 'g_spread', 'volume', 'rating_id',
+                  'rating']
