@@ -83,34 +83,6 @@ class Command(BaseCommand):
             except Bonds.DoesNotExist:
                 continue
 
-
-        # print('filling in volume')
-        # date_14_days_ago = datetime.date.today() - datetime.timedelta(days=14)  # here we calculate and add volume
-        # # taking data from last ~10 trading days
-        # objs = Bonds.objects.all()
-        #
-        # for item in objs:
-        #     isin = item.isin  # resources on volume
-        #     response = requests.get(
-        #         'https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/TQCB/securities/'
-        #         f'{isin}.json?iss.meta=off&from={date_14_days_ago}')  # have to check by ISIN since there is
-        #     history = response.json()['history']  # pagination, prolly need to figure out other
-        #     # way to do this
-        #     history_data = []
-        #     for data in history['data']:
-        #         if data[14]:
-        #             history_data.append(data[14])
-        #         else:
-        #             continue
-        #     if history_data:
-        #         avg_volume = int((sum(history_data) / len(history_data)) * 1000)
-        #         print(f'writing volume for {isin}')
-        #         item.volume = avg_volume
-        #         item.save()
-        #
-        # print('done')
-
-
         print('filling in volume')
         # creating url list
         url_list = []

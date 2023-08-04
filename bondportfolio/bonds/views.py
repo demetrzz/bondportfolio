@@ -57,5 +57,5 @@ class BondsImage(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user_id = self.request.user.id                                                                                                  
-        image = Images.generate_and_send(user_id, (1, 2))
+        image = Images.generate_and_send(user_id, (0,1,2))
         return image
