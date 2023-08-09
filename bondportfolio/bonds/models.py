@@ -49,9 +49,23 @@ class Rating(models.Model):
 class Deals(models.Model):
     buy = models.BooleanField(null=False)
     quantity = models.IntegerField(null=False)
+    price_at_the_time = models.DecimalField(max_digits=5, decimal_places=2, null=False)
     time_create = models.DateTimeField(auto_now_add=True)
+    custom_time = models.DateTimeField(blank=True, null=True)
+    total_value = models.IntegerField(null=True)
     bonds = models.ForeignKey('Bonds', on_delete=models.PROTECT, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @classmethod
+    def calculate_value(cls, user_id):
+        obj = Deals.objects.filter(user_id=user_id)
+        total_value = obj.
+        Deals.objects.update_or_create(
+            user_id=user_id,
+            defaults={
+                'image_base64': total_value,
+            }
+        )
 
     class Meta:
         verbose_name_plural = "Deals"
