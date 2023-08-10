@@ -21,12 +21,26 @@ class DealsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class DealsSerializerByUser(serializers.ModelSerializer):
+class DealsByUserSerializer(serializers.ModelSerializer):
     bonds = BondsSerializer(read_only=True)
 
     class Meta:
         model = Deals
         fields = ['user_id', 'id', 'bonds']
+
+
+class DealsTotalValueSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+    total_value = serializers.IntegerField()
+
+    # def get_total_value(self, obj):
+    #     user_id = self.context['request'].user.id
+    #     #print(f'{obj.calculate_value(user_id)} kek')
+    #     return obj.calculate_value(user_id)
+    #
+    # class Meta:
+    #     model = Deals
+    #     fields = ['user_id', 'total_value']
 
 
 class ImageSerializer(serializers.ModelSerializer):

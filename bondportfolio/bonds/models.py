@@ -52,22 +52,22 @@ class Deals(models.Model):
     price_at_the_time = models.DecimalField(max_digits=5, decimal_places=2, null=False)
     time_create = models.DateTimeField(auto_now_add=True)
     custom_time = models.DateTimeField(blank=True, null=True)
-    total_value = models.IntegerField(null=True)
-    bonds = models.ForeignKey('Bonds', on_delete=models.PROTECT, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    bonds = models.ForeignKey('Bonds', on_delete=models.PROTECT, null=False, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
 
     @classmethod
     def calculate_value(cls, user_id):
-        obj = Deals.objects.filter(user_id=user_id)
-        total_value = obj.
-        Deals.objects.update_or_create(
-            user_id=user_id,
-            defaults={
-                'image_base64': total_value,
-            }
-        )
+        qs = Deals.objects.filter(user_id=user_id)
+        total_value = 0
+        for item in qs:
+            if item.buy:
+                total_value += item.quantity * item.price_at_the_time
+            else:
+                total_value -= item.quantity * item.price_at_the_time
+        return total_value
 
     class Meta:
+        ordering = ['time_create', 'custom_time']
         verbose_name_plural = "Deals"
 
 
