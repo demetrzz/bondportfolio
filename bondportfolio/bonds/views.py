@@ -69,7 +69,8 @@ class DealsTotalValue(generics.ListAPIView):
 def total_value_view(request):
     user_id = request.user.id
     total_value = Deals.calculate_value(user_id)
-    serializer = DealsTotalValueSerializer(total_value, user_id)
+    my_data = {'user_id': user_id, 'total_value': total_value}
+    serializer = DealsTotalValueSerializer(my_data)
     return Response(serializer.data)
 
 

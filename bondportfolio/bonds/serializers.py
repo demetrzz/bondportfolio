@@ -29,7 +29,7 @@ class DealsByUserSerializer(serializers.ModelSerializer):
         fields = ['user_id', 'id', 'bonds']
 
 
-class DealsTotalValueSerializer(serializers.ModelSerializer):
+class DealsTotalValueSerializer(serializers.Serializer):
     user_id = serializers.IntegerField()
     total_value = serializers.IntegerField()
 
