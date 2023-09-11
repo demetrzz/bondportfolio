@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-)5p3*@91ub^d$fk+@adq!=d6-*tpjo%naq*#+fkp6#1i#klzjr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 # Application definition
@@ -81,21 +81,13 @@ WSGI_APPLICATION = 'bondportfolio.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-
     'default': {
-
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-
-        'NAME': 'bonds',
-
-        'USER': 'postgres',
-
-        'PASSWORD': 'testpassword',
-
-        'HOST': 'localhost',
-
-        'PORT': '',
-
+        'NAME': os.environ.get('POSTGRES_NAME'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': 'db',
+        'PORT': 5432
     }
 }
 
