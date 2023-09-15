@@ -24,6 +24,7 @@ API по корпоративным облигациям.
 git clone https://github.com/demetrzz/bondportfolio
 cd bondportfolio
 sudo docker compose build
+docker compose up
 ```
 Подключиться к контейнеру web:
 ```sh
