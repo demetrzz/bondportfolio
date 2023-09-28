@@ -191,4 +191,6 @@ fabric.properties
 
 #docker
 .data
+/data
 data
+db
