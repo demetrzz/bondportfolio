@@ -13,6 +13,8 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from celery.schedules import crontab
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -197,3 +199,14 @@ SIMPLE_JWT = {
 
 CELERY_BROKER_URL = "redis://redis:6379/0"
 CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+CELERY_IMPORTS = ['bondportfolio.tasks', ]
+CELERY_BEAT_SCHEDULE = {
+    "sample_task": {
+        "task": "bondportfolio.tasks.sample_task",
+        "schedule": crontab(minute="*/1"),
+    },
+    "send_email_report": {
+        "task": "bondportfolio.tasks.test_celery_command",
+        "schedule": crontab(minute="*/2"),
+    },
+}

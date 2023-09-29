@@ -27,9 +27,24 @@ services:
     ports:
       - '6380:6380'
   celery:
+    restart: always
+    build: .
+    command: celery -A bondportfolio worker -l debug
+    #volumes:
+    #  - ./bondportfolio:/bondportfolio
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_NAME=bonds
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=testpassword
+    depends_on:
+      - db
+      - redis
+      - web
+  celery-beat:
     #restart: always
     build: .
-    command: celery -A bondportfolio worker -l info
+    command: celery -A bondportfolio beat -l debug
     #volumes:
     #  - ./bondportfolio:/bondportfolio
     environment:
